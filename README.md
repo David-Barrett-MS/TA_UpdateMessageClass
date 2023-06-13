@@ -1,4 +1,4 @@
-#Exchange 2019 Transport Agent to update message class
+# Exchange 2019 Transport Agent to update message class
 
 This is a sample that shows how the message class of a message can be updated from within an Exchange 2019 Transport Agent.
 
