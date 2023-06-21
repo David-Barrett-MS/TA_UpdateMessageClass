@@ -55,7 +55,8 @@ namespace TA_UpdateMessageClass
         }
 
         /// <summary>
-        /// Handle the OnRoutedMessage event
+        /// Handle the OnRoutedMessage event.
+        /// Occurs after the server routes the message to the next hop and performs content conversion, if required.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
@@ -65,7 +66,8 @@ namespace TA_UpdateMessageClass
         }
 
         /// <summary>
-        /// Handle the OnCategorizedMessage event
+        /// Handle the OnCategorizedMessage event.
+        /// Occurs after the server performs content conversion, if it is required.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
@@ -76,7 +78,8 @@ namespace TA_UpdateMessageClass
         }
 
         /// <summary>
-        ///  Handle the OnResolvedMessage event
+        ///  Handle the OnResolvedMessage event.
+        ///  Occurs after all the recipients of the message have been resolved and before routing is determined.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
@@ -86,7 +89,8 @@ namespace TA_UpdateMessageClass
         }
 
         /// <summary>
-        /// Handle the OnSubmittedMessage event
+        /// Handle the OnSubmittedMessage event.
+        /// Occurs after the message is taken off the submit queue.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
@@ -96,7 +100,8 @@ namespace TA_UpdateMessageClass
         }
 
         /// <summary>
-        /// Checks the message to see if the message class needs to be updated
+        /// Checks the message to see if the message class needs to be updated.
+        /// If message matches criteria, update the message class and dump all the message properties to the log.
         /// </summary>
         /// <param name="e">QueuedMessageEventArgs containing message to check</param>
         private void CheckForMessageClassUpdate(QueuedMessageEventArgs e)
