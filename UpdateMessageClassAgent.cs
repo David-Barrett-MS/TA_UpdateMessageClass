@@ -39,7 +39,50 @@ namespace TA_UpdateMessageClass
                 _logger.Log("UpdateMessageClassAgent instantiated");
             }
 
+            // See https://learn.microsoft.com/en-us/exchange/client-developer/transport-agents/how-to-create-a-routingagent-transport-agent-for-exchange-2013
+
+            // Occurs after the message is taken off the submit queue. Use the OnSubmittedMessage event if your RoutingAgent transport agent does not require content conversion, resolved recipients, or routing data.
             base.OnSubmittedMessage += UpdateMessageClassAgent_OnSubmittedMessage;
+
+            // Occurs after all the recipients of the message have been resolved and before routing is determined.
+            base.OnResolvedMessage += UpdateMessageClassAgent_OnResolvedMessage;
+
+            // Occurs after the server performs content conversion, if it is required.
+            base.OnCategorizedMessage += UpdateMessageClassAgent_OnCategorizedMessage;
+
+            // Occurs after the server routes the message to the next hop and performs content conversion, if required. The server might use more resources to process each message in the OnRoutedMessage event than the OnSubmittedMessage event because the server will perform any necessary content conversion and determine the next hop in the route for the message before it executes the code in the OnRoutedMessage event handler.
+            base.OnRoutedMessage += UpdateMessageClassAgent_OnRoutedMessage;
+        }
+
+        /// <summary>
+        /// Handle the OnRoutedMessage event
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void UpdateMessageClassAgent_OnRoutedMessage(RoutedMessageEventSource source, QueuedMessageEventArgs e)
+        {
+            _logger.Log($"OnRoutedMessage called for item of type {e.MailItem.Message.MapiMessageClass}");
+        }
+
+        /// <summary>
+        /// Handle the OnCategorizedMessage event
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void UpdateMessageClassAgent_OnCategorizedMessage(CategorizedMessageEventSource source, QueuedMessageEventArgs e)
+        {
+            _logger.Log($"OnCategorizedMessage called for item of type {e.MailItem.Message.MapiMessageClass}");
+            CheckForMessageClassUpdate(e);
+        }
+
+        /// <summary>
+        ///  Handle the OnResolvedMessage event
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void UpdateMessageClassAgent_OnResolvedMessage(ResolvedMessageEventSource source, QueuedMessageEventArgs e)
+        {
+            _logger.Log($"OnResolvedMessage called for item of type {e.MailItem.Message.MapiMessageClass}");
         }
 
         /// <summary>
@@ -50,6 +93,14 @@ namespace TA_UpdateMessageClass
         private void UpdateMessageClassAgent_OnSubmittedMessage(SubmittedMessageEventSource source, QueuedMessageEventArgs e)
         {
             _logger.Log($"OnSubmittedMessage called for item of type {e.MailItem.Message.MapiMessageClass}");
+        }
+
+        /// <summary>
+        /// Checks the message to see if the message class needs to be updated
+        /// </summary>
+        /// <param name="e">QueuedMessageEventArgs containing message to check</param>
+        private void CheckForMessageClassUpdate(QueuedMessageEventArgs e)
+        {
             if (e.MailItem.Message.Subject.StartsWith("UPDATEMESSAGECLASS") && e.MailItem.Message.MapiMessageClass == "IPM.Note")
             {
                 UpdateMessageClass(e.MailItem);
